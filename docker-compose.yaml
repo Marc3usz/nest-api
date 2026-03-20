@@ -1,0 +1,17 @@
+services:
+  postgres:
+    image: postgres
+    container_name: techni-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pass123
+      POSTGRES_DB: techni
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    command: postgres -c password_encryption=md5
+
+volumes:
+  postgres_data:

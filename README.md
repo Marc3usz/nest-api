@@ -31,6 +31,27 @@
 $ npm install
 ```
 
+## PostgreSQL + Prisma setup
+
+1. Start the PostgreSQL Docker image:
+
+```bash
+$ docker compose up -d
+```
+
+2. Copy `.env.example` to `.env` (it is preconfigured for the Docker PostgreSQL service).
+3. Generate the Prisma client:
+
+```bash
+$ npm run prisma:generate
+```
+
+4. Create and apply the first migration:
+
+```bash
+$ npm run prisma:migrate -- --name init
+```
+
 ## Compile and run the project
 
 ```bash

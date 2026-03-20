@@ -1,44 +1,47 @@
 import { Injectable } from '@nestjs/common';
+import { Product as PrismaProduct } from '@prisma/client';
 import { CreateProductDto } from './dto/create-product.dto';
 import { Product } from './products.types';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class ProductsService {
-  private products: Product[] = [
-    { id: 1, name: 'Keylogger Keyboard', price: 299.99 },
-    { id: 2, name: 'Stealth Hoodie', price: 149.5 },
-    { id: 3, name: 'Exploit Mug', price: 39.99 },
-    { id: 4, name: 'Packet Sniffer Lamp', price: 219.0 },
-    { id: 5, name: 'Zero-Day Stickers', price: 19.99 },
-  ];
+  constructor(private readonly prisma: PrismaService) {}
 
-  findAll(): Product[] {
-    return this.products;
-  }
-
-  findOne(id: number): Product | undefined {
-    return this.products.find((product) => product.id === id);
-  }
-
-  create(dto: CreateProductDto): Product {
-    const nextId =
-      this.products.length > 0
-        ? Math.max(...this.products.map((product) => product.id)) + 1
-        : 1;
-
-    const newProduct: Product = {
-      id: nextId,
-      name: dto.name,
-      price: dto.price,
+  private toProduct(product: PrismaProduct): Product {
+    return {
+      id: product.id,
+      name: product.name,
+      price: Number(product.price),
     };
-
-    this.products.push(newProduct);
-    return newProduct;
   }
 
-  delete(id: number): boolean {
-    const initialLength = this.products.length;
-    this.products = this.products.filter((product) => product.id !== id);
-    return this.products.length !== initialLength;
+  async findAll(): Promise<Product[]> {
+    const products = await this.prisma.product.findMany({
+      orderBy: { id: 'asc' },
+    });
+
+    return products.map((product) => this.toProduct(product));
+  }
+
+  async findOne(id: number): Promise<Product | null> {
+    const product = await this.prisma.product.findUnique({ where: { id } });
+    return product ? this.toProduct(product) : null;
+  }
+
+  async create(dto: CreateProductDto): Promise<Product> {
+    const product = await this.prisma.product.create({
+      data: {
+        name: dto.name,
+        price: dto.price,
+      },
+    });
+
+    return this.toProduct(product);
+  }
+
+  async delete(id: number): Promise<boolean> {
+    const result = await this.prisma.product.deleteMany({ where: { id } });
+    return result.count > 0;
   }
 }

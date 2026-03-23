@@ -30,7 +30,7 @@ export class ProductsController {
   @ApiOperation({ summary: 'Pobierz wszystkie produkty' })
   @ApiOkResponse({ description: 'Lista produktow' })
   @Get()
-  findAll() {
+  async findAll() {
     return this.productsService.findAll();
   }
 
@@ -38,8 +38,8 @@ export class ProductsController {
   @ApiParam({ name: 'id', type: Number, example: 1 })
   @ApiNotFoundResponse({ description: 'Produkt nie istnieje' })
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    const product = this.productsService.findOne(id);
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    const product = await this.productsService.findOne(id);
     if (!product) {
       throw new NotFoundException('Produkt nie istnieje');
     }
@@ -51,7 +51,7 @@ export class ProductsController {
   @ApiBody({ type: CreateProductDto })
   @ApiOkResponse({ description: 'Utworzony produkt' })
   @Post()
-  create(@Body() dto: CreateProductDto) {
+  async create(@Body() dto: CreateProductDto) {
     return this.productsService.create(dto);
   }
 
@@ -66,8 +66,8 @@ export class ProductsController {
   @ApiNotFoundResponse({ description: 'Produkt nie istnieje' })
   @Delete(':id')
   @UseGuards(AdminGuard)
-  remove(@Param('id', ParseIntPipe) id: number) {
-    const deleted = this.productsService.delete(id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    const deleted = await this.productsService.delete(id);
     if (!deleted) {
       throw new NotFoundException('Produkt nie istnieje');
     }

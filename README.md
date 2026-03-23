@@ -1,119 +1,212 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Techni Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Backend API for a small shop-like flow built with NestJS, Prisma, and PostgreSQL.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Stack
 
-## Description
+- NestJS 11
+- Prisma 7 + PostgreSQL
+- Swagger (OpenAPI)
+- Class-validator / class-transformer
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Features
 
-## Project setup
+- Product catalog:
+  - list products
+  - get product by id
+  - create product
+  - delete product (guarded by admin key)
+- Cart handling scoped by cart key header:
+  - add product to cart
+  - read cart items
+- Health-style endpoint:
+  - ping endpoint
 
-```bash
-$ npm install
+## Project Structure
+
+```text
+src/
+  products/   # product endpoints + admin guard
+  cart/       # cart endpoints + cart logic
+  ping/       # simple ping endpoint
+  prisma/     # Prisma service initialization
+prisma/
+  schema.prisma
+  migrations/
 ```
 
-## PostgreSQL + Prisma setup
+## Requirements
 
-1. Start the PostgreSQL Docker image:
+- Node.js 20+
+- Docker (for local PostgreSQL)
+- npm
 
-```bash
-$ docker compose up -d
+## Environment Variables
+
+Create a .env file in the project root. Example:
+
+```env
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=password
+POSTGRES_DB=db
+POSTGRES_PORT=1234
+DATABASE_URL=postgresql://postgres:password@localhost:1234/db
+
+# Optional
+PORT=3000
+ADMIN_KEY=supersecret
 ```
 
-2. Copy `.env.example` to `.env` (it is preconfigured for the Docker PostgreSQL service).
-3. Generate the Prisma client:
+Notes:
+- If ADMIN_KEY is not set, the default key is supersecret.
+- API routes are served under /api/v1.
+
+## Quick Start
+
+1. Install dependencies:
 
 ```bash
-$ npm run prisma:generate
+npm install
 ```
 
-4. Create and apply the first migration:
+2. Start PostgreSQL container:
 
 ```bash
-$ npm run prisma:migrate -- --name init
+docker compose up -d
 ```
 
-## Compile and run the project
+3. Generate Prisma client:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm run prisma:generate
 ```
 
-## Run tests
+4. Apply migrations:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm run prisma:migrate -- --name init
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+5. Start development server:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm run start:dev
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+API base URL: http://localhost:3000/api/v1
 
-## Resources
+Swagger docs: http://localhost:3000/api/v1/docs
 
-Check out a few resources that may come in handy when working with NestJS:
+## NPM Scripts
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```bash
+npm run start        # start app
+npm run start:dev    # start in watch mode
+npm run start:prod   # run compiled app
 
-## Support
+npm run build        # compile TypeScript
+npm run lint         # lint and auto-fix
+npm run format       # prettier format
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+npm run test         # unit tests
+npm run test:e2e     # e2e tests
+npm run test:cov     # test coverage
 
-## Stay in touch
+npm run prisma:generate
+npm run prisma:migrate
+npm run prisma:studio
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## API Endpoints
+
+All endpoints below are relative to /api/v1.
+
+### General
+
+- GET /
+  - Returns: Hello World!
+- GET /ping
+  - Returns: Pong!
+
+### Products
+
+- GET /products
+  - Returns all products sorted by id ascending
+- GET /products/:id
+  - Returns one product
+  - 404 if product does not exist
+- POST /products
+  - Body:
+
+```json
+{
+  "name": "Keylogger Keyboard",
+  "price": 299.99
+}
+```
+
+- DELETE /products/:id
+  - Requires header: x-admin-key
+  - 404 if product does not exist
+
+### Cart
+
+Cart is identified by x-cart-id header. If omitted or blank, cart id defaults to default.
+
+- POST /cart/add
+  - Optional header: x-cart-id
+  - Body:
+
+```json
+{
+  "productId": 1,
+  "quantity": 2
+}
+```
+
+  - 404 if product does not exist
+- GET /cart
+  - Optional header: x-cart-id
+  - Returns array of:
+
+```json
+{
+  "productId": 1,
+  "quantity": 2
+}
+```
+
+## Example cURL
+
+```bash
+# create product
+curl -X POST http://localhost:3000/api/v1/products \
+  -H "Content-Type: application/json" \
+  -d "{\"name\":\"Keylogger Keyboard\",\"price\":299.99}"
+
+# list products
+curl http://localhost:3000/api/v1/products
+
+# add to cart (custom cart id)
+curl -X POST http://localhost:3000/api/v1/cart/add \
+  -H "Content-Type: application/json" \
+  -H "x-cart-id: marcel-cart" \
+  -d "{\"productId\":1,\"quantity\":2}"
+
+# read cart
+curl http://localhost:3000/api/v1/cart -H "x-cart-id: marcel-cart"
+
+# delete product (admin)
+curl -X DELETE http://localhost:3000/api/v1/products/1 \
+  -H "x-admin-key: supersecret"
+```
+
+## Prisma Notes
+
+- Prisma schema is in prisma/schema.prisma.
+- Prisma config and datasource URL are defined in prisma.config.ts.
+- Prisma client uses @prisma/adapter-pg in runtime.
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+UNLICENSED

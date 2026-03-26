@@ -51,6 +51,7 @@ POSTGRES_PASSWORD=password
 POSTGRES_DB=db
 POSTGRES_PORT=1234
 DATABASE_URL=postgresql://postgres:password@localhost:1234/db
+DIRECT_DATABASE_URL=postgresql://postgres:password@localhost:5432/db
 
 # Optional
 PORT=3000
@@ -60,6 +61,7 @@ ADMIN_KEY=supersecret
 Notes:
 - If ADMIN_KEY is not set, the default key is supersecret.
 - API routes are served under /api/v1.
+- Use DATABASE_URL for runtime (can be pooled) and DIRECT_DATABASE_URL for Prisma migrations (non-pooled/direct).
 
 ## Quick Start
 

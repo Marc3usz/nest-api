@@ -12,7 +12,19 @@ export class PrismaService extends PrismaClient {
       throw new Error('DATABASE_URL is not set');
     }
 
-    const adapter = new PrismaPg({ connectionString: databaseUrl });
+    const rejectUnauthorized =
+      process.env.DATABASE_SSL_REJECT_UNAUTHORIZED !== 'false';
+
+    if (!rejectUnauthorized) {
+      process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+    }
+
+    const adapter = new PrismaPg({
+      connectionString: databaseUrl,
+      ssl: {
+        rejectUnauthorized,
+      },
+    });
 
     super({
       adapter,

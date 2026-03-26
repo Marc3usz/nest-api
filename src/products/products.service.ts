@@ -1,14 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { Product as PrismaProduct } from '@prisma/client';
 import { CreateProductDto } from './dto/create-product.dto';
 import { Product } from './products.types';
 import { PrismaService } from '../prisma/prisma.service';
+
+type PrismaProductRecord = {
+  id: number;
+  name: string;
+  price: unknown;
+};
 
 @Injectable()
 export class ProductsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  private toProduct(product: PrismaProduct): Product {
+  private toProduct(product: PrismaProductRecord): Product {
     return {
       id: product.id,
       name: product.name,

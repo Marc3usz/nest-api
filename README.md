@@ -5,7 +5,7 @@ Backend API for a small shop-like flow built with NestJS, Prisma, and PostgreSQL
 ## Stack
 
 - NestJS 11
-- Prisma 7 + PostgreSQL
+- Prisma 6 + PostgreSQL
 - Swagger (OpenAPI)
 - Class-validator / class-transformer
 
@@ -115,6 +115,45 @@ npm run test:cov     # test coverage
 npm run prisma:generate
 npm run prisma:migrate
 npm run prisma:studio
+```
+
+## Deploy To Vercel
+
+This project is configured for Vercel serverless deployment.
+
+### One-time setup
+
+1. Import this repository in Vercel.
+2. Framework preset: Other.
+3. Root directory: project root.
+4. Build command: npm run build.
+5. Install command: npm install.
+
+### Required environment variables in Vercel
+
+- DATABASE_URL
+- ADMIN_KEY (optional but recommended)
+
+Example DATABASE_URL:
+
+```env
+DATABASE_URL=postgresql://user:password@host:5432/dbname
+```
+
+### Deploy
+
+After setting env vars, trigger a deployment from the Vercel dashboard or push to your connected branch.
+
+API base URL on Vercel:
+
+```text
+https://<your-project>.vercel.app/api/v1
+```
+
+Swagger docs on Vercel:
+
+```text
+https://<your-project>.vercel.app/api/v1/docs
 ```
 
 ## API Endpoints

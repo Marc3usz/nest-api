@@ -3,13 +3,12 @@ import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import express from 'express';
-import serverless from 'serverless-http';
 import { AppModule } from '../src/app.module';
 
-let cachedHandler: ReturnType<typeof serverless> | null = null;
+const expressApp = express();
+let isInitialized = false;
 
-async function createHandler() {
-  const expressApp = express();
+async function initializeApp() {
   const app = await NestFactory.create(AppModule, new ExpressAdapter(expressApp), {
     logger: ['error', 'warn', 'log'],
   });
@@ -35,13 +34,13 @@ async function createHandler() {
   });
 
   await app.init();
-  return serverless(expressApp);
+  isInitialized = true;
 }
 
 export default async function handler(req: express.Request, res: express.Response) {
-  if (!cachedHandler) {
-    cachedHandler = await createHandler();
+  if (!isInitialized) {
+    await initializeApp();
   }
 
-  return cachedHandler(req, res);
+  return expressApp(req, res);
 }
